@@ -1,4 +1,4 @@
-module chapter-1
+module github.com/phaseharry/distributed-services-with-go/chapter-1
 
 go 1.22.2
 

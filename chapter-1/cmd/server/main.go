@@ -1,8 +1,9 @@
 package main
 
 import (
-	"chapter-1/internal/server"
 	"log"
+
+	"github.com/phaseharry/distributed-services-with-go/chapter-1/internal/server"
 )
 
 func main() {

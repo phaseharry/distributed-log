@@ -1,3 +1,5 @@
+Regarding Logs
+
 - each log entry has a unique id (offset) starting from a point (usually 0) and having the offset value be incremented by 1 after each new event
 - so events can be ordered by the time in which it is created
 - the oldest event will have the smallest offset value (0) and the newest event will have the largest current offset value

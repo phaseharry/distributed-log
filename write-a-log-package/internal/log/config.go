@@ -3,7 +3,7 @@ package log
 type Config struct {
 	Segment struct {
 		MaxStoreBytes uint64
-		MaxIndexBytes uint32
+		MaxIndexBytes uint64
 		InitialOffset uint64
 	}
 }

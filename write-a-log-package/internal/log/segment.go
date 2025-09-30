@@ -131,3 +131,53 @@ func (s *segment) Read(off uint64) (*api.Record, error) {
 	err = proto.Unmarshal(p, record)
 	return record, err
 }
+
+/*
+returns a boolean indicating whether the index file or the store file has reached the max size of each defined in config.
+- index file max will be reached if there are a lot of small record entries
+- store fix max will be reached if there are a few huge record entries
+*/
+func (s *segment) IsMaxed() bool {
+	return s.store.size >= s.config.Segment.MaxStoreBytes || s.index.size >= s.config.Segment.MaxStoreBytes
+}
+
+/*
+remove is called by the log to remove the current segment from the log by closing the connections
+to the log and index as well as deleting their respective files. when called, it is assumed that
+the records has been processed already and storage can be cleared and be used by other entries
+*/
+func (s *segment) Remove() error {
+	if err := s.Close(); err != nil {
+		return err
+	}
+	if err := os.Remove(s.index.Name()); err != nil {
+		return err
+	}
+	if err := os.Remove(s.store.Name()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *segment) Close() error {
+	if err := s.index.Close(); err != nil {
+		return err
+	}
+	if err := s.store.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+util function that returns the nearest and lesser multiple of k in j.
+ex. nearestMultiple(9, 4) = 8
+taking the lesser mutlple to make sure the index and store files are below
+the user's disk capacity
+*/
+func nearestMultiple(j, k uint64) uint64 {
+	if j >= 0 {
+		return (j / k) * k
+	}
+	return ((j - k + 1) / k) * k
+}

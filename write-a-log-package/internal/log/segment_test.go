@@ -18,7 +18,7 @@ func TestSegment(t *testing.T) {
 
 	c := Config{}
 	c.Segment.MaxStoreBytes = 1024
-	c.Segment.InitialOffset = entWidth * 3
+	c.Segment.MaxIndexBytes = entWidth * 3
 
 	s, err := newSegment(dir, 16, c)
 	require.NoError(t, err)
@@ -51,6 +51,7 @@ func TestSegment(t *testing.T) {
 	   that the segment would still be maxed
 	*/
 	require.True(t, s.IsMaxed())
+
 	err = s.Remove()
 	require.NoError(t, err)
 

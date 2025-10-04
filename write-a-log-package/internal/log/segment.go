@@ -138,7 +138,7 @@ returns a boolean indicating whether the index file or the store file has reache
 - store fix max will be reached if there are a few huge record entries
 */
 func (s *segment) IsMaxed() bool {
-	return s.store.size >= s.config.Segment.MaxStoreBytes || s.index.size >= s.config.Segment.MaxStoreBytes
+	return s.store.size >= s.config.Segment.MaxStoreBytes || s.index.size >= s.config.Segment.MaxIndexBytes
 }
 
 /*

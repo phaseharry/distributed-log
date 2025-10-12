@@ -22,7 +22,7 @@ type Log struct {
 	segments      []*segment // points to a list of segments that's still cataloged on disk and hasn't been fully processed yet. (used and then tossed)
 }
 
-func newLog(dir string, c Config) (*Log, error) {
+func NewLog(dir string, c Config) (*Log, error) {
 	if c.Segment.MaxStoreBytes == 0 {
 		c.Segment.MaxStoreBytes = 1024
 	}

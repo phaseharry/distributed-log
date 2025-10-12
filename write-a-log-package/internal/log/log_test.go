@@ -1,7 +1,7 @@
 package log
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 
@@ -22,13 +22,15 @@ func TestLog(t *testing.T) {
 		"truncate":                             testTruncate,
 	} {
 		t.Run(scenario, func(t *testing.T) {
-			dir, err := ioutil.TempDir("", "store-test")
+			dir, err := os.MkdirTemp("", "store-test")
 			require.NoError(t, err)
 			defer os.RemoveAll(dir)
+
 			c := Config{}
 			c.Segment.MaxStoreBytes = 32
 			log, err := NewLog(dir, c)
 			require.NoError(t, err)
+
 			fn(t, log)
 		})
 	}
@@ -62,7 +64,7 @@ func testInitExisting(t *testing.T, log *Log) {
 		Value: []byte("hello world"),
 	}
 	// appending records to log and then closing connection to it
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, err := log.Append(append)
 		require.NoError(t, err)
 	}
@@ -101,7 +103,7 @@ func testReader(t *testing.T, log *Log) {
 	require.Equal(t, uint64(0), off)
 
 	reader := log.Reader()
-	b, err := ioutil.ReadAll(reader)
+	b, err := io.ReadAll(reader)
 	require.NoError(t, err)
 
 	read := &api.Record{}
@@ -127,5 +129,5 @@ func testTruncate(t *testing.T, log *Log) {
 	require.NoError(t, err)
 
 	_, err = log.Read(0)
-	require.NoError(t, err)
+	require.Error(t, err)
 }

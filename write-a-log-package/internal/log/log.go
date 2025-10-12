@@ -3,7 +3,6 @@ package log
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"sort"
@@ -37,7 +36,7 @@ func NewLog(dir string, c Config) (*Log, error) {
 }
 
 func (l *Log) setup() error {
-	files, err := ioutil.ReadDir(l.Dir)
+	files, err := os.ReadDir(l.Dir)
 	if err != nil {
 		return err
 	}
@@ -182,7 +181,7 @@ func (l *Log) LowestOffset() (uint64, error) {
 
 func (l *Log) HighestOffset() (uint64, error) {
 	l.mu.RLock()
-	defer l.mu.RLock()
+	defer l.mu.RUnlock()
 	off := l.segments[len(l.segments)-1].nextOffset
 	if off == 0 {
 		return 0, nil

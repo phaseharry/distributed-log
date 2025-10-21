@@ -54,7 +54,7 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 
 	// opening up index file that is associated with this baseOffset segment.
 	indexFile, err := os.OpenFile(
-		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".omdex")),
+		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".index")),
 		os.O_RDWR|os.O_CREATE,
 		0644,
 	)

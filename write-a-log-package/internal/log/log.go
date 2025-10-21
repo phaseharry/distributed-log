@@ -113,8 +113,8 @@ func (l *Log) Append(record *api.Record) (uint64, error) {
 }
 
 func (l *Log) Read(off uint64) (*api.Record, error) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	l.mu.RLock()
+	defer l.mu.RUnlock()
 	var s *segment
 	/*
 		given an offset, find the segment that the offset belongs in.

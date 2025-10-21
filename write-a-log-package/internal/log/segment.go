@@ -41,7 +41,7 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 
 	// opening up store file that is associated with this baseOffset segment.
 	storeFile, err := os.OpenFile(
-		path.Join(dir, fmt.Sprintf("%d,%s", baseOffset, ".store")),
+		path.Join(dir, fmt.Sprintf("%d%s", baseOffset, ".store")),
 		os.O_RDWR|os.O_CREATE|os.O_APPEND,
 		0644,
 	)

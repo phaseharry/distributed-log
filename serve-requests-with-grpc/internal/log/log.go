@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path"
@@ -10,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	api "github.com/phaseharry/distributed-log/write-a-log-package/api/v1"
+	api "github.com/phaseharry/distributed-log/serve-requests-with-grpc/api/v1"
 )
 
 type Log struct {
@@ -129,7 +128,7 @@ func (l *Log) Read(off uint64) (*api.Record, error) {
 	}
 	// throw error if we can't find the segment based on the offset
 	if s == nil || s.nextOffset <= off {
-		return nil, fmt.Errorf("offset out of range: %d", off)
+		return nil, api.ErrOffsetOutOfRange{Offset: off}
 	}
 	/*
 	   the offset is the index's location. Segment will get the index entry

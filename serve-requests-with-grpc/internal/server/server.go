@@ -4,6 +4,7 @@ import (
 	"context"
 
 	api "github.com/phaseharry/distributed-log/serve-requests-with-grpc/api/v1"
+	"google.golang.org/grpc"
 )
 
 type Config struct {
@@ -21,6 +22,19 @@ ex. Produce, Consume, ProduceStream, and ConsumeStream
 type grpcServer struct {
 	api.UnimplementedLogServer
 	*Config
+}
+
+func NewGrpcServer(config *Config) (*grpc.Server, error) {
+	gsrv := grpc.NewServer()
+	srv, err := newGrpcServer(config)
+
+	if err != nil {
+		return nil, err
+	}
+
+	api.RegisterLogServer(gsrv, srv)
+
+	return gsrv, nil
 }
 
 func newGrpcServer(config *Config) (srv *grpcServer, err error) {
@@ -95,11 +109,22 @@ func (s *grpcServer) ConsumeStream(
 				continue
 			default:
 				return err
-				if err = stream.Send(res); err != nil {
-					return err
-				}
-				req.Offset++
 			}
+			if err = stream.Send(res); err != nil {
+				return err
+			}
+			req.Offset++
 		}
 	}
+}
+
+/*
+using an interface to decouple the server implementation with the log implementation.
+this will let us swap out log implementations based on the environment we running in.
+ie, production env will get the actual log implementation that writes and reads logs to / from disk,
+while testing env will get a mocked version that writes and reads to / from memory
+*/
+type CommitLog interface {
+	Append(*api.Record) (uint64, error)
+	Read(uint64) (*api.Record, error)
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	api "github.com/phaseharry/distributed-log/write-a-log-package/api/v1"
+	api "github.com/phaseharry/distributed-log/serve-requests-with-grpc/api/v1"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 )
@@ -56,7 +56,8 @@ func testOutOfRangeErr(t *testing.T, log *Log) {
 	// testing that we get an error when we attempt to read an offset that's out of bound
 	read, err := log.Read(1)
 	require.Nil(t, read)
-	require.Error(t, err)
+	apiErr := err.(api.ErrOffsetOutOfRange)
+	require.Equal(t, uint64(1), apiErr.Offset)
 }
 
 func testInitExisting(t *testing.T, log *Log) {

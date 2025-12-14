@@ -74,13 +74,14 @@ func (s *grpcServer) ProduceStream(stream api.Log_ProduceStreamServer) error {
 	for {
 		req, err := stream.Recv()
 		if err != nil {
-			res, err := s.Produce(stream.Context(), req)
-			if err != nil {
-				return err
-			}
-			if err = stream.Send(res); err != nil {
-				return err
-			}
+			return err
+		}
+		res, err := s.Produce(stream.Context(), req)
+		if err != nil {
+			return err
+		}
+		if err = stream.Send(res); err != nil {
+			return err
 		}
 	}
 }

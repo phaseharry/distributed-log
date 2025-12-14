@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	api "github.com/phaseharry/distributed-log/write-a-log-package/api/v1"
+	api "github.com/phaseharry/distributed-log/serve-requests-with-grpc/api/v1"
 	"github.com/stretchr/testify/require"
 )
 
